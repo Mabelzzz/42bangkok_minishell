@@ -12,6 +12,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "colours.h"
+# include <limits.h>
 
 enum token {
 	GREAT, // output >
@@ -140,13 +141,21 @@ void		pim_list(t_lexer *list);
 void		init_signal(void);
 void		sig_handler_c(int sig);
 // builtin.c
-void		into_builtin(t_main *main);
-void		into_builtin2(t_cmd *cmd, int i);
+// void		into_builtin(t_main *main);
+// void		into_builtin2(t_main *main, t_cmd *cmd, int i);
+
+int			check_builtin(t_cmd *tmp);
+int			into_builtin_parent(t_main *main, t_cmd *cmd);
+int			into_builtin_child(t_main *main, t_cmd *cmd);
 // buildin.c
 void		print_word(char *str);
-void		builtin_echo(t_cmd *cmd);
-void		builtin_env();
-void		builtin_pwd(t_cmd *cmd);
+int			builtin_echo(t_main *main, t_cmd *cmd);
+int			builtin_env(t_main *main, t_cmd *cmd);
+int			builtin_pwd(t_main *main, t_cmd *cmd);
+int			builtin_export(t_main *main, t_cmd *cmd);
+// int			builtin_unset(t_main *main, t_cmd *cmd);
+// int			builtin_exit(t_main *main, t_cmd *cmd);
+int			builtin_cd(t_main *main, t_cmd *cmd);
 // expander.c
 void		expander(t_main *main);
 char		*cut_quote(char *str);
@@ -214,7 +223,7 @@ void	err_cmd(t_main *main, char *cmd, int err);
 void	err_msg_free(t_main *main, char *msg);
 void	err_msg(char *msg);
 void	ft_exit(int err);
-
+int		err_builtin(t_main *main, t_cmd *cmd, int err);
 // 	utils_path.c
 // int		find_path(char **env);
 int		check_access_path(t_main *main, char *cmd);
