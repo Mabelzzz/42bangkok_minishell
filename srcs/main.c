@@ -6,7 +6,7 @@
 /*   By: pnamwayk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 18:26:04 by wluedara          #+#    #+#             */
-/*   Updated: 2023/07/15 13:44:13 by pnamwayk         ###   ########.fr       */
+/*   Updated: 2023/07/21 15:02:49 by pnamwayk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,10 @@ int	main(int argc, char **argv)
 
 	(void)argv;
 	(void)argc;
-	// if (argc > 1)
-	// 	print_str(YEL"You put the wrong input\n"RESET);
+	if (argc > 1)
+		print_str(YEL"You put the wrong input\n"RESET);
 	printf(YEL"====> ~ HELLO WELCOME ~ <====\n"RESET); // welcome message
+	int tmp = dup(0);
 	while (1) // loop till want to exit
 	{
 		// init_signal(); // catch signal
@@ -51,6 +52,7 @@ int	main(int argc, char **argv)
 		// get_heredoc(main);
 		// free(str); // free input
 		// free_all(&main); // free everything after finish execue cmd or reset everything to start again
+		dup2(0,tmp);
 	}
 	return (0);
 }

@@ -3,7 +3,7 @@
 void	start_process(t_main *main);
 void	create_process(t_main *main);
 void	child_process(t_main *main, t_cmd *tmp, int id);
-void	parent_process(t_main *main);
+void	parent_process(t_main *main, t_cmd *tmp, int id);
 void	waiting_process(t_main *main);
 int		check_redirect(char *s);
 void	ft_close_pipe(t_main *main, int pfd);
@@ -46,8 +46,8 @@ void	create_process(t_main *main)
 			if (pipe(main->pfd) == -1)
 				err_msg_free(main, "Pipe error: ");
 		}
-		if (check_builtin(tmp) != 2)
-		{
+		// if (check_builtin(tmp) != 2)
+		// {
 			main->pid[id] = fork();
 			if (main->pid[id] == -1)
 				err_msg_free(main, "Fork error: ");
@@ -55,10 +55,13 @@ void	create_process(t_main *main)
 				child_process(main, tmp, id);
 				// printf("child process = %d, id = %d\n", main->pid[id], id);
 			else
-				parent_process(main);
-		}
-		else
-			builtin_parent_process(main, tmp, id);
+				parent_process(main, tmp, id);
+		// }
+		// else
+		// {
+		// 	printf("hiii\n");
+		// 	builtin_parent_process(main, tmp, id);
+		// }
 		free_command(tmp->command);
 		tmp = tmp->next;
 	}
@@ -83,6 +86,18 @@ void	ft_close_pipe(t_main *main, int pfd)
 
 void	child_process(t_main *main, t_cmd *tmp, int id)
 {
+	if (check_builtin(tmp) == 2)
+	{
+		ft_close_pipe(main, main->pfd[0]);
+		ft_close_pipe(main, main->pfd[1]);
+		exit(0);
+		return ;
+	}
+	// else if (check_builtin(tmp) == 2)
+	// {
+	// 	if (into_builtin_parent(main, tmp))
+	// 		err_msg_free(main, "builtin error sth");
+	// }
 	dup_infile(main, tmp, id);
 	dup_outfile(main, tmp, id);
 	ft_close_pipe(main, main->pfd[0]);
@@ -110,22 +125,25 @@ void	child_process(t_main *main, t_cmd *tmp, int id)
 
 void	builtin_parent_process(t_main *main, t_cmd *tmp, int id)
 {
-	dup_infile(main, tmp, id);
-	dup_outfile(main, tmp, id);
-	ft_close_pipe(main, main->pfd[1]);
-	if (main->num_pipe > 0)
-		main->tmp_fd = dup(main->pfd[0]);
-	ft_close_pipe(main, main->pfd[0]);
+	(void) id;
+	// dup_infile(main, tmp, id);
+	// dup_outfile(main, tmp, id);
+	// ft_close_pipe(main, main->pfd[1]);
+	// if (main->num_pipe > 0)
+	// 	main->tmp_fd = dup(main->pfd[0]);
+	// ft_close_pipe(main, main->pfd[0]);
 	if (into_builtin_parent(main, tmp))
 		err_msg_free(main, "builtin error sth");
 }
 
-void	parent_process(t_main *main)
+void	parent_process(t_main *main, t_cmd *tmp, int id)
 {
-	ft_close_pipe(main, main->pfd[1]);
-	if (main->num_pipe > 0)
-		main->tmp_fd = dup(main->pfd[0]);
-	ft_close_pipe(main, main->pfd[0]);
+		ft_close_pipe(main, main->pfd[1]);
+		if (main->num_pipe > 0)
+			main->tmp_fd = dup(main->pfd[0]);
+		ft_close_pipe(main, main->pfd[0]);
+	if (check_builtin(tmp) == 2)
+		builtin_parent_process(main, tmp, id);
 }
 
 void	waiting_process(t_main *main)

@@ -208,7 +208,7 @@ int		check_heredoc_file(t_cmd *tmp, char *file_name);
 void	start_process(t_main *main);
 void	create_process(t_main *main);
 void	child_process(t_main *main, t_cmd *tmp, int id);
-void	parent_process(t_main *main);
+void	parent_process(t_main *main, t_cmd *tmp, int id);
 void	waiting_process(t_main *main);
 int		check_redirect(char *s);
 
