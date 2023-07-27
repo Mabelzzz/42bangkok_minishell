@@ -57,7 +57,7 @@ void	print_sorted_env(t_main *main)
 void	sort_env(char **env)
 {
 	int		i;
-	// int		j;
+	int		j;
 	char *tmp;
 	(void) env;
 	i = -1;
@@ -65,22 +65,23 @@ void	sort_env(char **env)
 	// while(env[++i])
 	// 	printf("env[%d] = |%s|\n", i, env[i]);
 
-	// while (env[++i])
-	// {
-	// 	j = i;
-	// 	while (env[++j])
-	// 	{
-	// 		// printf("-> env[%d] = |%s| , env[%d] = |%s|\n", i, env[i], j, env[j]);
-	// 		if (ft_envcpm(env[i], env[j]) > 0)
-	// 		{
-	// 			// printf("%d > 0 -> env[%d] = |%s| , env[%d] = |%s|\n", ft_envcpm(env[i], env[j]), i, env[i], j, env[j]);
-	// 			ft_swap(&env[i], &env[j]);
-	// 			// tmp = env[i];
-	// 			// env[i] = env[j];
-	// 			// env[j] = tmp;
-	// 		}
-	// 	}
-	// }
+	while (env[++i])
+	{
+		j = i;
+		while (env[++j])
+		{
+			// printf("-> env[%d] = |%s| , env[%d] = |%s|\n", i, env[i], j, env[j]);
+			if (ft_envcpm(env[i], env[j]) > 0)
+			{
+				// printf("%d > 0 -> env[%d] = |%s| , env[%d] = |%s|\n", ft_envcpm(env[i], env[j]), i, env[i], j, env[j]);
+				ft_swap(&env[i], &env[j]);
+				// tmp = env[i];
+				// env[i] = env[j];
+				// env[j] = tmp;
+			}
+		}
+	}
+	// return (env);
 }
 
 // int	sort_env(char **str)

@@ -6,7 +6,7 @@
 /*   By: pnamwayk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 21:13:32 by wluedara          #+#    #+#             */
-/*   Updated: 2023/07/15 15:53:34 by pnamwayk         ###   ########.fr       */
+/*   Updated: 2023/07/24 08:44:06 by pnamwayk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ int	into_builtin_child(t_main *main, t_cmd *cmd)
 		return (builtin_pwd(main, cmd));
 	else if (!ft_strncmp(cmd->command[0], "env", 4))
 		return (builtin_env(main, cmd));
+	else if (!ft_strncmp(cmd->command[0], "export", 7))
+		return (builtin_export(main, cmd));
 	return (-1);
 }
 
@@ -66,9 +68,21 @@ int check_builtin(t_cmd *tmp)
 		!ft_strncmp(tmp->command[0], "env", 4))
 		return (1);
 	if (!ft_strncmp(tmp->command[0], "cd", 3) ||
-		!ft_strncmp(tmp->command[0], "export", 6) ||
 		!ft_strncmp(tmp->command[0], "unset", 5) ||
 		!ft_strncmp(tmp->command[0], "exit", 4))
 		return (2);
+	if (!ft_strncmp(tmp->command[0], "export", 6))
+	{
+		if (!tmp->command[1])
+		{
+			dprintf(2, "return 1\n");
+			return (1);
+		}
+		else
+		{
+			dprintf(2, "return (2)\n");
+			return (2);
+		}
+	}
 	return (0);
 }

@@ -93,11 +93,6 @@ void	child_process(t_main *main, t_cmd *tmp, int id)
 		exit(0);
 		return ;
 	}
-	// else if (check_builtin(tmp) == 2)
-	// {
-	// 	if (into_builtin_parent(main, tmp))
-	// 		err_msg_free(main, "builtin error sth");
-	// }
 	dup_infile(main, tmp, id);
 	dup_outfile(main, tmp, id);
 	ft_close_pipe(main, main->pfd[0]);
