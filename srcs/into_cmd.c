@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   into_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnamwayk <pnamwayk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pnamwayk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 16:21:40 by wluedara          #+#    #+#             */
-/*   Updated: 2023/07/03 13:57:33 by pnamwayk         ###   ########.fr       */
+/*   Updated: 2023/08/06 00:30:27 by pnamwayk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "hell.h"
 
-char	**get_envp()
+char	**get_envp(void)
 {
 	char	**tmp;
 	int		i;
@@ -33,19 +33,25 @@ char	**get_envp()
 	return (tmp);
 }
 
-void	get_cmd(t_main *main, char *str)
+int	get_cmd(t_main *main, char *str)
 {
-	if (!cut_cmd(str))
-		return ;
-	main->str_cmd = cut_cmd(str); // put lexer after split into main->str_cmd
-	if (!check_error(main->str_cmd))
+	char	**test1;
+	char	**test2;
+	char	***str2;
+
+	if (str[0] == '\0' || !check_error(str))
+		return (0);
+	test1 = ft_split(str, ' ');
+	test2 = ft_split(str, '|');
+	if (!test1[0] || !check_quote_pair(test2))
 	{
-		del_split(main->str_cmd);
-		return ;
+		del_split(test1);
+		return (del_split(test2), 0);
 	}
-	main->lexer = spilt_to_list(main->str_cmd, main->lexer); // make char** into linked list
-	// pim_list(main->lexer);
-	main->cmd = list_cmd(main); // convert lexer to parser and redirect info
-	del_list_lexer(&main->lexer); // del lexer after finish parser
-	// pim_cmd(main->cmd);
+	str2 = cut_test(test2);
+	del_split(test1);
+	del_split(test2);
+	main->cmd = list_cmd(main, str2);
+	del_sam_dao(str2);
+	return (1);
 }

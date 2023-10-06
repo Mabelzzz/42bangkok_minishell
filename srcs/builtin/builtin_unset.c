@@ -1,35 +1,63 @@
-int builtin_unset(t_main *main, t_cmd *cmd)
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_unset.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pnamwayk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/08/06 18:31:03 by pnamwayk          #+#    #+#             */
+/*   Updated: 2023/08/06 18:31:07 by pnamwayk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "hell.h"
+
+int		builtin_unset(t_cmd *cmd);
+char	**delete_variable(int line);
+
+int	builtin_unset(t_cmd *cmd)
 {
-	check_format(cmd->command);
-
-
-}
-
-int	check_special(char *str)
-{
+	int	row_vrb;
 	int	i;
 
-	i = -1;
-	while(str[++i])
-	 	if (str)
-			return (1);
+	i = 0;
+	while (cmd->command[++i])
+	{
+		if (check_format_variable(cmd->command[i]))
+		{
+			row_vrb = find_variable_inenv(cmd->command[i]);
+			if (row_vrb != -1)
+			{
+				environ = delete_variable(row_vrb);
+			}
+		}
+		else
+			err_msg_builtin("unset", cmd->command[i]);
+	}
 	return (0);
 }
 
-void	check_format()
+char	**delete_variable(int line)
 {
-	int	i;
+	int		i;
+	int		j;
+	char	**new;
 
-	i = 1;
-	while (cmd->command[i])
+	i = 0;
+	while (environ[i])
+		i++;
+	new = malloc(sizeof(char *) * i);
+	i = -1;
+	j = -1;
+	while (environ[++i])
 	{
-		if (cmd->command[i][0] == '_' || (cmd->command[i][0]  ))
-		while (/* condition */)
+		if (i != line)
 		{
-			/* code */
+			new[j] = ft_strdup(environ[i]);
+			j++;
 		}
-
 	}
+	new[j] = NULL;
+	free(environ);
+	return (new);
 }
-
-int	c

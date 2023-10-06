@@ -10,14 +10,14 @@ CYN=\e[0;36m
 WHT=\e[0;37m
 RESET=\e[0m
 
-# RL_DIR := /usr/local/opt/readline/
-# LIB_RL := -L$(RL_DIR)lib/
+RL_DIR := /usr/local/opt/readline/
+LIB_RL := -L$(RL_DIR)lib/
 
-RL_DIR := /usr/local/lib
-LIB_RL := -L$(RL_DIR)
+# RL_DIR := /usr/local/lib
+# LIB_RL := -L$(RL_DIR)
 
 CC := gcc
-CFLAGS := -Wall -Werror -Wextra -lreadline $(LIB_RL) -g
+CFLAGS := -Wall -Werror -Wextra -lreadline $(LIB_RL) -g #-fsanitize=address
 
 LIBFT_DIR := ./libft
 LIBFT := $(LIBFT_DIR)/libft.a

@@ -3,32 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wluedara <wluedara@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pnamwayk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 14:29:35 by wluedara          #+#    #+#             */
-/*   Updated: 2023/06/12 16:39:00 by wluedara         ###   ########.fr       */
+/*   Updated: 2023/08/06 00:31:53 by pnamwayk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "hell.h"
-
-int	check_quote(char **s)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (s[i])
-	{
-		j = ft_strlen(s[i]);
-		if (is_quote(s[i][0]) == 1 && is_quote(s[i][j - 1]) != 1)
-			return (0);
-		else if (is_quote(s[i][0]) == 2 && is_quote(s[i][j - 1]) != 2)
-			return (0);
-		i++;
-	}
-	return (1);
-}
 
 char	*my_split_lexer(char *s)
 {
@@ -39,8 +21,7 @@ char	*my_split_lexer(char *s)
 	int		j;
 
 	s2 = ft_strtrim(s, " ");
-	i = 0;
-	letter = count_letter_split(s2, i);
+	letter = count_letter_split(s2, 0);
 	str = malloc(sizeof(char) * (letter + 1));
 	if (!str)
 		return (0);
@@ -53,46 +34,63 @@ char	*my_split_lexer(char *s)
 	return (str);
 }
 
-int	check_error(char **s)
+int	check_error(char *s)
 {
 	int	len;
 
-	len = find_len_split(s) - 1;
-	if (!ft_strncmp(s[len], "|", 1))
+	len = ft_strlen(s) - 1;
+	if (len == 0)
+		return (0);
+	if (s[len] == '|')
 	{
 		print_str(BCYN"Pipe is at the end ¯\\_ಠ_ಠ_/¯\n"RESET);
 		return (0);
 	}
-	else if (!ft_strncmp(s[len], "<", 1) || !ft_strncmp(s[len], ">", 1) || \
-	!ft_strncmp(s[len], ">>", 2) || !ft_strncmp(s[len], "<<", 2))
+	else if (s[len] == '>' || s[len] == '<')
 	{
-		print_str(BCYN"Command is not complete ۹( ÒہÓ )۶\n"RESET);
+		print_str(BMAG"Command is not complete ۹( ÒہÓ )۶\n"RESET);
 		return (0);
 	}
 	return (1);
 }
 
-char	**cut_cmd(char *s)
+int	check_close(char *s)
 {
-	char	**new;
-	int		word;
 	int		i;
-	int		j;
-	int		letter;
+	int		close;
+	char	quote;
 
 	i = 0;
-	word = check_word_lexer(s, ft_strlen(s), i);
-	new = malloc(sizeof(char *) * (word + 1));
-	if (!new)
-		return (0);
-	i = 0;
-	j = 0;
-	while (i < word)
+	close = -1;
+	while (s[i])
 	{
-		new[i++] = my_split_lexer(&s[j]);
-		letter = count_letter_lexer(&s[j]);
-		j += letter;
+		if (is_quote(s[i]))
+		{
+			if (close == -1)
+				quote = s[i];
+			if (close == 0 && s[i] == quote)
+				close = -1;
+			else
+				close = 0;
+		}
+		i++;
 	}
-	new[i] = NULL;
-	return (new);
+	return (close == -1);
+}
+
+int	check_quote_pair(char **s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (!check_close(s[i]))
+		{
+			printf(BYEL"ไอ้โง่! quote are not pair in lexer (ㆆ_ㆆ)\n"RESET);
+			return (0);
+		}
+		i++;
+	}
+	return (1);
 }

@@ -1,189 +1,109 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_export.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pnamwayk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/08/06 18:32:04 by pnamwayk          #+#    #+#             */
+/*   Updated: 2023/08/06 18:32:09 by pnamwayk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "hell.h"
 
+void	do_export(char *cmd, int row_vrb, char *vrb);
 int		builtin_export(t_main *main, t_cmd *cmd);
-void	ft_swap(char **s1, char **s2);
-size_t	ft_len_trim(char *str, char trm);
-size_t	ft_min_len(char *s1, char *s2);
-void	print_sorted_env(t_main *main);
-void	sort_env(char **env);
-int		ft_envcpm(char *s1, char *s2);
-char	**ft_strdup2();
+char	*ft_strtrim_vrb(char *cmd, char set);
+char	**add_variable(char *cmd);
+void	instead_variable(char *cmd, int row_vrb);
+
+void	do_export(char *cmd, int row_vrb, char *vrb)
+{
+	row_vrb = find_variable_inenv(vrb);
+	if (row_vrb != -1)
+		instead_variable(cmd, row_vrb);
+	else
+		environ = add_variable(cmd);
+}
 
 int	builtin_export(t_main *main, t_cmd *cmd)
 {
-	(void) cmd;
-	(void) main;
+	int		i;
+	char	*vrb;
 
 	if (!cmd->command[1])
-		print_sorted_env(main);
-	// char **str = ft_strdup2();
-	// sort_env(str);
-	// sort_evnv(str);
-	// int i = -1;
-	// while(str[++i])
-	// {
-	// 	printf("str[%d] = |%s|\n", i, str[i]);
-	// 	printf("env[%d] = |%s|\n", i, environ[i]);
-	// 	printf("-----------------------------------------------------------------------\n");
-	// }
-	// print_sorted_env(main);
-	// printf("%d\n",ft_envcpm("0=gh", ""));
-	// if (i < )
-	// if (environ[i + 1])
-	// 	compare = ft_strtrim(environ[i + 1], "=");
-	// if (ft_strncmp(first, compare, ft_strlen(first)) < 0)
-
-	return (0);
-	// return (exit(0));
-}
-
-void	print_sorted_env(t_main *main)
-{
-	int		i;
-	char	**str;
-	(void)	main;
-
-	// i = -1;
-	str = ft_strdup2();
-	// while(str[++i])
-	// 	printf("env[%d] = |%s|\n", i, str[i]);
-	sort_env(str);
-	i = -1;
-	while(str[++i])
-		printf("declare -x %s\n", str[i]);
-}
-
-void	sort_env(char **env)
-{
-	int		i;
-	int		j;
-	char *tmp;
-	(void) env;
-	i = -1;
-	tmp = NULL;
-	// while(env[++i])
-	// 	printf("env[%d] = |%s|\n", i, env[i]);
-
-	while (env[++i])
+		print_sorted_env();
+	else
 	{
-		j = i;
-		while (env[++j])
+		i = 0;
+		while (cmd->command[++i])
 		{
-			// printf("-> env[%d] = |%s| , env[%d] = |%s|\n", i, env[i], j, env[j]);
-			if (ft_envcpm(env[i], env[j]) > 0)
+			vrb = ft_strtrim_vrb(cmd->command[i], '=');
+			if (vrb && check_format_variable(vrb))
+				do_export(cmd->command[i], 0, vrb);
+			else
 			{
-				// printf("%d > 0 -> env[%d] = |%s| , env[%d] = |%s|\n", ft_envcpm(env[i], env[j]), i, env[i], j, env[j]);
-				ft_swap(&env[i], &env[j]);
-				// tmp = env[i];
-				// env[i] = env[j];
-				// env[j] = tmp;
+				err_msg_builtin("export", cmd->command[i]);
+				main->exit_status = 1;
+				return (free(vrb), 1);
 			}
+			if (vrb)
+				free(vrb);
 		}
 	}
-	// return (env);
+	return (0);
 }
 
-// int	sort_env(char **str)
-// {
-// 	int		i;
-// 	int		j;
-
-// 	i = -1;
-// 	// str[i] = ft_strtrim(str, "=");
-// 	while (str[++i])
-// 	{
-// 		j = -1;
-// 		while (str[++j])
-// 		{
-// 			if (ft_strncmp(str[i], str[j], ft_min_len(str[i], str[j])) > 0)
-// 				ft_swap(&str[i], &str[j]);
-// 		}
-// 	}
-// }
-
-// size_t	ft_len_trim(char *str, char trm)
-// {
-// 	size_t	len;
-
-// 	len = 0;
-// 	while (str[len] != trm && str[len] != 0)
-// 		len++;
-// 	return (len);
-// }
-
-size_t	ft_min_len(char *s1, char *s2)
+char	*ft_strtrim_vrb(char *cmd, char set)
 {
-	size_t	a;
-	size_t	b;
+	char	*str;
+	int		i;
+	int		check;
 
-	a = ft_strlen(s1);
-	b = ft_strlen(s2);
-	if (a > b)
-		return (b);
-	return (a);
+	i = 0;
+	check = 0;
+	str = NULL;
+	while (cmd[i] && cmd[i] != set)
+		i++;
+	if (i > 0)
+		check = 1;
+	if (check == 1 && i > 0)
+	{
+		str = malloc(sizeof(char) * (i + 1));
+		i = -1;
+		while (cmd[++i] && cmd[i] != set)
+			str[i] = cmd[i];
+		str[i] = 0;
+	}
+	return (str);
 }
 
-char	**ft_strdup2(void)
+char	**add_variable(char *cmd)
 {
 	int		i;
-	// int		j;
 	char	**new;
 
-	// (void) str;
 	i = 0;
 	while (environ[i])
 		i++;
-	new = malloc(sizeof(char *) * (i + 1));
+	new = malloc(sizeof(char *) * (i + 2));
 	i = -1;
 	while (environ[++i])
-	{
 		new[i] = ft_strdup(environ[i]);
-	}
-	new[i] = NULL;
+	new[i] = ft_strdup(cmd);
+	new[i + 1] = NULL;
+	if (environ)
+		free_2d(environ);
 	return (new);
 }
 
-
-
-int	ft_envcpm(char *s1, char *s2)
+void	instead_variable(char *cmd, int row_vrb)
 {
-	size_t	a;
-	size_t	b;
+	unsigned int	len;
 
-	if (ft_strncmp(s1, s2, ft_min_len(s1, s2)) != 0)
-	{
-
-		return (ft_strncmp(s1, s2, ft_min_len(s1, s2)));
-	}
-	a = ft_strlen(s1);
-	b = ft_strlen(s2);
-	if (ft_strncmp(s1, s2, ft_min_len(s1, s2)) == 0 && a != b)
-	{
-		if (a > b)
-			return ((unsigned char)s1[b] - (unsigned char)'\0');
-		else
-			return ((unsigned char)s2[a] - (unsigned char)'\0');
-	}
-	return (0);
+	len = ft_strlen(cmd) + 1;
+	free(environ[row_vrb]);
+	environ[row_vrb] = malloc(sizeof(char) * len);
+	ft_strlcpy(environ[row_vrb], cmd, len);
 }
-
-void free_2d(char **str)
-{
-	int		i;
-
-	i = -1;
-	while (str[++i])
-		free(str[i]);
-	free(str);
-}
-
-void	ft_swap(char **s1, char **s2)
-{
-	char	*tmp;
-
-	tmp = *s1;
-	*s1 = *s2;
-	*s2 = tmp;
-}
-

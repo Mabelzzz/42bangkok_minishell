@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wluedara <wluedara@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pnamwayk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/29 13:03:14 by wluedara          #+#    #+#             */
-/*   Updated: 2023/02/03 11:09:26 by wluedara         ###   ########.fr       */
+/*   Updated: 2023/08/06 19:13:07 by pnamwayk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ void	*ft_memmove(void *str1, void *str2, size_t n)
 		return (NULL);
 	while (s1 < s2 && i < n && n >= 0)
 	{
-			s1[i] = s2[i];
-			i++;
+		s1[i] = s2[i];
+		i++;
 	}
 	while (s1 > s2 && n > 0)
 	{
-			s1[n - 1] = s2[n - 1];
-			n--;
+		s1[n - 1] = s2[n - 1];
+		n--;
 	}
 	return (str1);
 }

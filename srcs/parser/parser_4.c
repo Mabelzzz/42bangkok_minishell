@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_4.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnamwayk <pnamwayk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wluedara <wluedara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 21:17:02 by wluedara          #+#    #+#             */
-/*   Updated: 2023/07/03 13:45:09 by pnamwayk         ###   ########.fr       */
+/*   Updated: 2023/08/05 21:10:10 by wluedara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	**check_heredoc(char **cmd, int hc)
 
 	i = -1;
 	j = 0;
-	str = malloc(sizeof(char *) * hc + 1);
+	str = malloc(sizeof(char *) * (hc + 1));
 	while (cmd[++i])
 	{
 		if (ft_strncmp(cmd[i], "<<", 2) == 0 && cmd[i + 1] != NULL)
@@ -38,10 +38,10 @@ char	**check_infile(char **cmd, int inf)
 
 	i = -1;
 	j = 0;
-	str = malloc(sizeof(char *) * inf + 1);
+	str = malloc(sizeof(char *) * (inf + 1));
 	while (cmd[++i] && j < inf)
 	{
-		if ((!ft_strncmp(cmd[i], "<<", 2) || !ft_strncmp(cmd[i], "<", 1))
+		if ((!ft_strncmp(cmd[i], "<<", 2) || !ft_strncmp(cmd[i], "<", 1)) \
 		&& cmd[i + 1] != NULL)
 			str[j++] = ft_strdup(cmd[i + 1]);
 	}
@@ -57,11 +57,11 @@ char	**check_outfile(char **cmd, int of)
 
 	i = -1;
 	j = 0;
-	str = malloc(sizeof(char *) * of + 1);
+	str = malloc(sizeof(char *) * (of + 1));
 	while (cmd[++i] && j < of)
 	{
-		if ((!ft_strncmp(cmd[i], ">", 1) || !ft_strncmp(cmd[i], ">>", 2))
- 		&& cmd[i + 1] != NULL)
+		if ((!ft_strncmp(cmd[i], ">", 1) || !ft_strncmp(cmd[i], ">>", 2)) \
+		&& cmd[i + 1] != NULL)
 			str[j++] = ft_strdup(cmd[i + 1]);
 	}
 	str[j] = NULL;
@@ -76,7 +76,7 @@ char	**check_append(char **cmd, int ap)
 
 	i = -1;
 	j = 0;
-	str = malloc(sizeof(char *) * ap + 1);
+	str = malloc(sizeof(char *) * (ap + 1));
 	while (cmd[++i])
 	{
 		if (ft_strncmp(cmd[i], ">>", 2) == 0 && cmd[i + 1] != NULL)
@@ -84,4 +84,14 @@ char	**check_append(char **cmd, int ap)
 	}
 	str[j] = NULL;
 	return (str);
+}
+
+int	find_size3(char ***s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] != NULL)
+		i++;
+	return (i);
 }

@@ -6,7 +6,7 @@
 /*   By: pnamwayk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 00:51:59 by pnamwayk          #+#    #+#             */
-/*   Updated: 2023/07/03 03:21:34 by pnamwayk         ###   ########.fr       */
+/*   Updated: 2023/08/06 02:21:54 by pnamwayk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 // #include "../gnl/get_next_line.h"
 
 void	get_heredoc(t_main	*main);
-void	read_heredoc(t_main *main, t_cmd *tmp, size_t len_filename, int i);
+void	read_heredoc(t_cmd *tmp, size_t len_filename, int i);
 int		check_limiter(char *line, char *limiter, size_t n);
 int		check_append_file(t_cmd *tmp, char *file_name);
 int		check_heredoc_file(t_cmd *tmp, char *file_name);
@@ -31,16 +31,14 @@ void	get_heredoc(t_main *main)
 		i = -1;
 		while (++i < tmp->cnt_heredoc)
 		{
-			// printf("i = %d, cnt_heredic =- %d\n", i, tmp->cnt_heredoc);
-			// printf("tmp->heredoc_file[%d] = %s\n", i, tmp->heredoc_file[i]);
 			len_filename = ft_strlen(tmp->heredoc_file[i]);
-			read_heredoc(main, tmp, len_filename, i);
+			read_heredoc(tmp, len_filename, i);
 		}
 		tmp = tmp->next;
 	}
 }
 
-void	read_heredoc(t_main *main, t_cmd *tmp, size_t len_filename, int i)
+void	read_heredoc(t_cmd *tmp, size_t len_filename, int i)
 {
 	char	*line;
 	int		fd_heredoc;
@@ -48,7 +46,7 @@ void	read_heredoc(t_main *main, t_cmd *tmp, size_t len_filename, int i)
 
 	fd_heredoc = open(tmp->heredoc_file[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_heredoc == -1)
-		err_file(main, tmp->heredoc_file[i]);
+		err_file(tmp, tmp->heredoc_file[i]);
 	ft_putstr_fd("> ", STDOUT_FILENO);
 	line = get_next_line(STDIN_FILENO);
 	while (line && check_limiter(line, tmp->heredoc_file[i], len_filename) == 1)

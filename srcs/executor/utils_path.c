@@ -3,30 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   utils_path.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnamwayk <pnamwayk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pnamwayk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 00:52:48 by pnamwayk          #+#    #+#             */
-/*   Updated: 2023/07/03 14:06:14 by pnamwayk         ###   ########.fr       */
+/*   Updated: 2023/08/06 02:49:00 by pnamwayk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "hell.h"
 
-// int		find_path(char **env);
-int		check_access_path(t_main *main, char *cmd);
+char	*ft_join_path(char *s1, char *s2);
+int		check_access_path(t_main *main, t_cmd *tmp, char *cmd);
 
-// int	find_path(char **env)
-// {
-// 	int	i;
-
-// 	i = -1;
-// 	while (env[++i] != NULL)
-// 	{
-// 		if (ft_strncmp(env[i], "PATH=", ) == 0)
-// 			return (i);
-// 	}
-// 	return (-1);
-// }
 char	*ft_join_path(char *s1, char *s2)
 {
 	char	*str;
@@ -44,22 +32,21 @@ char	*ft_join_path(char *s1, char *s2)
 	str[s1_len] = '/';
 	ft_strlcpy(&str[s1_len + 1], s2, s2_len + 1);
 	return (str);
-
 }
 
-int	check_access_path(t_main *main, char *cmd)
+int	check_access_path(t_main *main, t_cmd *tmp, char *cmd)
 {
 	size_t	i;
 
 	if (!cmd)
-		return (err_cmd(main, cmd, 2), -1);
+		return (err_cmd(main, tmp, cmd, 2), -1);
 	if (ft_find_slash(cmd) == 0)
 	{
 		main->cur_path = ft_strdup(cmd);
 		if (access(cmd, F_OK & X_OK) == 0)
 			return (0);
 		free(main->cur_path);
-		err_cmd(main, cmd, 9);
+		err_cmd(main, tmp, cmd, 9);
 	}
 	else
 	{
@@ -71,7 +58,7 @@ int	check_access_path(t_main *main, char *cmd)
 				return (0);
 			free(main->cur_path);
 		}
-		err_cmd(main, cmd, 2);
+		err_cmd(main, tmp, cmd, 2);
 	}
 	return (-1);
 }
